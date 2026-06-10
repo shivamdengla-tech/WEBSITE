@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/components/About.tsx","./src/components/Contact.tsx","./src/components/Decks.tsx","./src/components/Hero.tsx","./src/components/Marquee.tsx","./src/components/Navbar.tsx","./src/components/StatsStrip.tsx","./src/components/WhatIDo.tsx","./src/components/Writing.tsx","./src/data/decks.ts"],"version":"5.9.3"}
