@@ -34,3 +34,58 @@ body {
 .hero-portrait {
   filter: sepia(1) saturate(2.6) hue-rotate(-18deg) brightness(0.78) contrast(1.1);
 }
+
+/* Custom cursor replaces the native one on precise pointers only */
+@media (pointer: fine) {
+  body,
+  a,
+  button,
+  a *,
+  button * {
+    cursor: none;
+  }
+}
+
+/* Nav links: letter-spacing expands and an ember underline draws in */
+.nav-link {
+  position: relative;
+  transition:
+    letter-spacing 0.2s ease,
+    color 0.2s ease;
+}
+.nav-link:hover {
+  letter-spacing: 0.05em;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1.5px;
+  width: 100%;
+  background: var(--color-ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Chips: a brighter border sweeps in left-to-right via clip-path */
+.chip-sweep {
+  position: relative;
+}
+.chip-sweep::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: inherit;
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.35s ease;
+}
+.chip-sweep:hover::after {
+  clip-path: inset(0 0 0 0);
+}

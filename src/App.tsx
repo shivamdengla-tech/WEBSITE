@@ -6,6 +6,8 @@ import WhatIDo from "./components/WhatIDo";
 import Decks from "./components/Decks";
 import Writing from "./components/Writing";
 import Contact from "./components/Contact";
+import CustomCursor from "./components/CustomCursor";
+import FilmGrain from "./components/FilmGrain";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
         <Writing />
         <Contact />
       </div>
+      <FilmGrain />
+      <CustomCursor />
     </main>
   );
 }

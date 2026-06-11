@@ -32,7 +32,7 @@ function DeckCard({
               <span className="text-sm font-semibold text-white/40">
                 {deck.num}
               </span>
-              <span className="rounded-full border border-white/15 px-3 py-1 text-xs font-medium uppercase tracking-widest text-white/60">
+              <span className="chip-sweep rounded-full border border-white/15 px-3 py-1 text-xs font-medium uppercase tracking-widest text-white/60">
                 Research
               </span>
             </div>

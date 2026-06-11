@@ -1,12 +1,14 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const FLOAT_PERIOD = 3; // seconds per up/down loop
 const FLOAT_AMPLITUDE_PX = 2; // pixels of vertical travel
-const SWAY_MAX = THREE.MathUtils.degToRad(15); // auto left-right sway
-const SWAY_PERIOD = 6; // seconds for a full sway cycle
-const LOOK_MAX = THREE.MathUtils.degToRad(10); // cursor-tracking limit
+const LOOK_MAX = THREE.MathUtils.degToRad(8); // cursor-parallax limit
 
 export default function AvatarCanvas({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,9 +46,24 @@ export default function AvatarCanvas({ className }: { className?: string }) {
     scene.add(floatGroup);
 
     let disposed = false;
+    let mixer: THREE.AnimationMixer | null = null;
     new GLTFLoader().load("/avatar.glb", (gltf) => {
       if (disposed) return;
       const model = gltf.scene;
+
+      // Baked-in animations: play the idle clip (or the first one) on loop
+      console.log(gltf.animations);
+      if (gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        const idle =
+          gltf.animations.find((clip) => /idle|stand/i.test(clip.name)) ??
+          gltf.animations[0];
+        gltf.animations.forEach((clip) => {
+          const action = mixer!.clipAction(clip);
+          action.setLoop(THREE.LoopRepeat, Infinity);
+          if (clip === idle) action.play();
+        });
+      }
 
       // Center the model, then frame head-to-waist (top 58% of the body)
       // to match the crop of the original portrait photo
@@ -80,9 +97,33 @@ export default function AvatarCanvas({ className }: { className?: string }) {
     const observer = new ResizeObserver(resize);
     observer.observe(container);
 
-    // Cursor / touch tracking, normalized to -1..1 around the viewport center
+    // Scroll-linked motion, scrubbed by ScrollTrigger against page scroll:
+    // 0-40% of the page rotates Y 0 -> 180deg, 40-60% scales 1 -> 0.6
+    const scrollState = { rotY: 0, scale: 1 };
+    const scrollTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: document.body,
+        start: "top top",
+        end: () =>
+          "+=" +
+          Math.max(
+            1,
+            (document.documentElement.scrollHeight - window.innerHeight) * 0.6,
+          ),
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
+    scrollTl
+      .to(scrollState, { rotY: Math.PI, duration: 40, ease: "none" }, 0)
+      .to(scrollState, { scale: 0.6, duration: 20, ease: "none" }, 40);
+
+    // Cursor parallax (window-level, the canvas stays pointer-events: none),
+    // normalized to -1..1 around the viewport center. On touch devices the
+    // gyroscope drives it instead.
     const pointerTarget = new THREE.Vector2(0, 0);
     const pointer = new THREE.Vector2(0, 0);
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
     const trackPoint = (clientX: number, clientY: number) => {
       pointerTarget.set(
         (clientX / window.innerWidth) * 2 - 1,
@@ -90,36 +131,48 @@ export default function AvatarCanvas({ className }: { className?: string }) {
       );
     };
     const onMouseMove = (e: MouseEvent) => trackPoint(e.clientX, e.clientY);
-    const onTouchMove = (e: TouchEvent) => {
-      const t = e.touches[0];
-      if (t) trackPoint(t.clientX, t.clientY);
+    const onOrientation = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return;
+      pointerTarget.set(
+        THREE.MathUtils.clamp(e.gamma / 30, -1, 1),
+        THREE.MathUtils.clamp((e.beta - 45) / 30, -1, 1),
+      );
     };
     const onPointerEnd = () => pointerTarget.set(0, 0);
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onPointerEnd);
-    document.documentElement.addEventListener("mouseleave", onPointerEnd);
+    if (finePointer) {
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+      document.documentElement.addEventListener("mouseleave", onPointerEnd);
+    } else if ("DeviceOrientationEvent" in window) {
+      window.addEventListener("deviceorientation", onOrientation, {
+        passive: true,
+      });
+    }
 
     const clock = new THREE.Clock();
+    let elapsed = 0;
     let frame = 0;
     const animate = () => {
       frame = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
+      const delta = clock.getDelta();
+      elapsed += delta;
+
+      // Drive the baked GLB animation
+      mixer?.update(delta);
 
       // Idle float: convert the pixel amplitude into world units at the camera
       const visibleHeight =
         2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
       const worldPerPixel = visibleHeight / (container.clientHeight || 1);
       floatGroup.position.y =
-        Math.sin((t * Math.PI * 2) / FLOAT_PERIOD) *
+        Math.sin((elapsed * Math.PI * 2) / FLOAT_PERIOD) *
         FLOAT_AMPLITUDE_PX *
         worldPerPixel;
 
-      // Smoothly ease the look rotation toward the cursor
+      // Whole-model tilt (no bone manipulation): scroll rotation + parallax
       pointer.lerp(pointerTarget, 0.06);
-      const sway = Math.sin((t * Math.PI * 2) / SWAY_PERIOD) * SWAY_MAX;
-      swayGroup.rotation.y = sway + pointer.x * LOOK_MAX;
+      swayGroup.rotation.y = scrollState.rotY + pointer.x * LOOK_MAX;
       swayGroup.rotation.x = pointer.y * LOOK_MAX * 0.6;
+      swayGroup.scale.setScalar(scrollState.scale);
 
       renderer.render(scene, camera);
     };
@@ -129,10 +182,12 @@ export default function AvatarCanvas({ className }: { className?: string }) {
       disposed = true;
       cancelAnimationFrame(frame);
       observer.disconnect();
+      scrollTl.scrollTrigger?.kill();
+      scrollTl.kill();
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onPointerEnd);
+      window.removeEventListener("deviceorientation", onOrientation);
       document.documentElement.removeEventListener("mouseleave", onPointerEnd);
+      mixer?.stopAllAction();
       scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {
           obj.geometry.dispose();
