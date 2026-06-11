@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Kanit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   --color-ink: #0c0c0c;
+  --color-ember: #ff5c1c;
 }
 
 html {
@@ -10,20 +11,26 @@ html {
 }
 
 body {
-  background-color: #0c0c0c;
+  background: radial-gradient(120% 90% at 50% -10%, #5a1d05 0%, #2a0e04 45%, #120703 100%)
+    fixed #120703;
   color: #ffffff;
   font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
 ::selection {
-  background: #ffffff;
-  color: #0c0c0c;
+  background: #ff5c1c;
+  color: #ffffff;
 }
 
 .gradient-text {
-  background: linear-gradient(100deg, #ffffff 10%, #b8b8ff 45%, #ff9ecb 75%, #ffd29e 100%);
+  background: linear-gradient(100deg, #ffffff 30%, #ffb38a 70%, #ff5c1c 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Warm duotone treatment for the hero portrait, matching the ember backdrop */
+.hero-portrait {
+  filter: sepia(1) saturate(2.6) hue-rotate(-18deg) brightness(0.78) contrast(1.1);
 }

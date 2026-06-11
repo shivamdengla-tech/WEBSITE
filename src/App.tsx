@@ -1,7 +1,6 @@
-import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import StatsStrip from "./components/StatsStrip";
-import Marquee from "./components/Marquee";
+import BehindTheDecks from "./components/BehindTheDecks";
 import About from "./components/About";
 import WhatIDo from "./components/WhatIDo";
 import Decks from "./components/Decks";
@@ -10,16 +9,17 @@ import Contact from "./components/Contact";
 
 export default function App() {
   return (
-    <main className="bg-[#0C0C0C] text-white">
-      <Navbar />
-      <Hero />
-      <StatsStrip />
-      <Marquee />
-      <About />
-      <WhatIDo />
-      <Decks />
-      <Writing />
-      <Contact />
+    <main className="p-3 text-white sm:p-5">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#0C0C0C] sm:rounded-[2.5rem]">
+        <Hero />
+        <StatsStrip />
+        <BehindTheDecks />
+        <About />
+        <WhatIDo />
+        <Decks />
+        <Writing />
+        <Contact />
+      </div>
     </main>
   );
 }
