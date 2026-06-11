@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import AvatarCanvas from "./AvatarCanvas";
 
 const navLinks = [
   { label: "Home", href: "#top" },
@@ -55,12 +56,7 @@ export default function Hero() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="pointer-events-none absolute inset-x-0 top-[6%] z-0 flex justify-center"
         >
-          <img
-            src="/portrait.png"
-            alt="Portrait of Shivam Dengla"
-            className="hero-portrait h-[58vh] max-h-[600px] w-auto select-none object-contain"
-            draggable={false}
-          />
+          <AvatarCanvas className="h-[58vh] max-h-[600px] w-auto select-none aspect-[4/5]" />
         </motion.div>
 
         {/* bottom fade so text stays readable over the portrait */}
