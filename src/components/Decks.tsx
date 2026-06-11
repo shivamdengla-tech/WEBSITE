@@ -24,15 +24,15 @@ function DeckCard({
     >
       <motion.article
         style={{ scale }}
-        className="grid w-full max-w-5xl origin-top grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-white/10 bg-[#161616] p-8 shadow-2xl md:grid-cols-2 md:p-12"
+        className="grid w-full max-w-5xl origin-top grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-ember/10 bg-[#181009] p-8 shadow-2xl md:grid-cols-2 md:p-12"
       >
         <div className="flex flex-col justify-between gap-8">
           <div>
             <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-white/40">
+              <span className="text-sm font-semibold text-ember">
                 {deck.num}
               </span>
-              <span className="chip-sweep rounded-full border border-white/15 px-3 py-1 text-xs font-medium uppercase tracking-widest text-white/60">
+              <span className="chip-sweep rounded-full border border-ember/25 px-3 py-1 text-xs font-medium uppercase tracking-widest text-white/60">
                 Research
               </span>
             </div>
@@ -50,7 +50,7 @@ function DeckCard({
             <ArrowUpRight className="size-4 transition-transform group-hover:rotate-45" />
           </a>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-white/10">
+        <div className="overflow-hidden rounded-2xl border border-ember/10">
           <img
             src={deck.cover}
             alt={`${deck.title} deck cover`}

@@ -4,6 +4,8 @@
   --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   --color-ink: #0c0c0c;
   --color-ember: #ff5c1c;
+  /* Warm divider tone so section lines feel connected to the hero */
+  --color-ember-line: rgb(255 80 0 / 0.15);
 }
 
 * {

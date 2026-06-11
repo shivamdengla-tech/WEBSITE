@@ -3,12 +3,12 @@ import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { decks } from "../data/decks";
 
 const PARAGRAPHS = [
-  "BITS Pilani, Goa. Dual degree. Most of what matters happened outside the classroom.",
-  "$40K+ in sales as a student. 9 national brand sponsorships — Pringles, TagZ, Storia, Lotte, and five more — closed before the sophomore year ended. Running a 3,000+ student community. JEE Advanced AIR ~9K. AA UK Scholar.",
+  "Third year at BITS Pilani, Goa. Chemist by degree. Product person by choice. Overthinker by default.",
+  "Spends most of his time reading things nobody assigned, writing teardowns on industries nobody asked about, watching Netflix with too much analysis, and buying fragrances with money that should go elsewhere. Gym or long drives. Coffee always.",
 ];
 
 const PARAGRAPH_MUTED =
-  "Now shifting obsessions. I want to understand why products win markets, not just sell them. The teardowns, the research, the decks — that's me trying to reverse-engineer what everyone else takes for granted.";
+  "The hustle chapter was fun. Now on the product and markets chapter and it is considerably more interesting.";
 
 function Char({
   char,
@@ -63,7 +63,10 @@ function RevealParagraph({
 
 export default function About() {
   return (
-    <section id="about" className="relative px-6 py-32 scroll-mt-16">
+    <section
+      id="about"
+      className="relative bg-[radial-gradient(55%_45%_at_0%_0%,rgba(255,92,28,0.07),transparent_70%)] px-6 py-32 scroll-mt-16"
+    >
       <motion.img
         src={decks[1].cover}
         alt=""

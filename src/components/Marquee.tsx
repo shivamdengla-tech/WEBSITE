@@ -22,7 +22,7 @@ function Row({
       {[...items, ...items].map((deck, i) => (
         <div
           key={`${deck.num}-${i}`}
-          className="h-44 w-64 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:h-56 sm:w-80"
+          className="h-44 w-64 shrink-0 overflow-hidden rounded-2xl border border-ember/10 bg-white/5 sm:h-56 sm:w-80"
         >
           <img
             src={deck.cover}

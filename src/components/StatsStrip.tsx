@@ -9,7 +9,7 @@ const stats = [
 
 export default function StatsStrip() {
   return (
-    <section className="border-b border-white/10 px-6 py-12 sm:px-10">
+    <section className="border-b border-ember-line px-6 py-12 sm:px-10">
       <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:gap-14">
         <motion.p
           initial={{ opacity: 0 }}

@@ -167,7 +167,7 @@ export default function Hero() {
   const tickerItems = [...specialties, ...specialties];
 
   return (
-    <section id="top" className="p-2 sm:p-3">
+    <section id="top" className="p-2 [transform:translateZ(0)] sm:p-3">
       <div
         ref={rootRef}
         className="relative flex min-h-[92vh] flex-col overflow-hidden rounded-[1.75rem] bg-[radial-gradient(130%_110%_at_50%_-5%,#ff8a3c_0%,#f04e06_32%,#9c2a03_60%,#3a1102_85%,#1c0801_100%)] sm:rounded-[2.25rem]"
@@ -182,19 +182,19 @@ export default function Hero() {
             {/* floating pill labels drifting around the avatar, clear of the face */}
             <span
               data-float-label
-              className="absolute left-5 top-5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
+              className="absolute left-5 top-5 rounded-full border border-ember/30 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
             >
               {floatingLabels[0]}
             </span>
             <span
               data-float-label
-              className="absolute -right-6 top-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 rounded-full border border-ember/30 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
             >
               {floatingLabels[1]}
             </span>
             <span
               data-float-label
-              className="absolute bottom-5 left-5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
+              className="absolute bottom-5 left-5 rounded-full border border-ember/30 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
             >
               {floatingLabels[2]}
             </span>
@@ -242,7 +242,7 @@ export default function Hero() {
               data-hero-intro
               className="mb-3 text-base font-medium text-white/85 sm:text-lg"
             >
-              Hey, I&apos;m Shivam — a
+              Hey, I&apos;m Shivam, a
             </p>
             <h1 className="text-6xl font-bold leading-[0.95] tracking-tight sm:text-8xl lg:text-9xl">
               <span data-hero-word="Deal">Deal</span>
@@ -257,7 +257,7 @@ export default function Hero() {
             </p>
             <p className="mt-3 text-sm font-light leading-relaxed text-white/70">
               From brand deals to 40-slide teardowns, I figure out why things
-              sell — then I sell them.
+              sell. Then I sell them.
             </p>
           </div>
         </div>
@@ -265,7 +265,7 @@ export default function Hero() {
         {/* numbered specialties: infinite marquee ticker */}
         <div
           data-hero-ticker
-          className="relative z-10 overflow-hidden border-t border-white/15 py-7"
+          className="relative z-10 overflow-hidden border-t border-ember-line py-7"
         >
           <div ref={tickerTrackRef} className="flex w-max items-center">
             {tickerItems.map((item, i) => (
@@ -275,9 +275,8 @@ export default function Hero() {
                 className="flex shrink-0 items-center gap-10 pr-10"
               >
                 <div>
-                  <p className="text-xs font-medium text-white/60">
-                    <span className="text-ember">#</span>
-                    {item.num}
+                  <p className="text-xs font-medium text-ember">
+                    #{item.num}
                   </p>
                   <p className="mt-1.5 text-sm font-medium">{item.label}</p>
                 </div>

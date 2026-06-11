@@ -69,12 +69,12 @@ export default function BehindTheDecks() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7, delay: i * 0.12, ease: "easeOut" }}
-            className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5"
+            className="group overflow-hidden rounded-2xl border border-ember/10 bg-white/5"
           >
             <img
               src={deck.cover}
               alt={`${deck.title} deck cover`}
-              className="aspect-video w-full object-cover grayscale transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+              className="aspect-video w-full object-cover sepia transition-all duration-500 group-hover:scale-105 group-hover:sepia-0"
               loading="lazy"
               draggable={false}
             />

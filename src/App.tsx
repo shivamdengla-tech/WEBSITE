@@ -12,7 +12,7 @@ import FilmGrain from "./components/FilmGrain";
 export default function App() {
   return (
     <main className="p-3 text-white sm:p-5">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#0C0C0C] sm:rounded-[2.5rem]">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#0d0805] bg-[radial-gradient(80%_50%_at_100%_0%,rgba(255,92,28,0.06),transparent_60%),radial-gradient(70%_45%_at_0%_70%,rgba(255,92,28,0.05),transparent_60%)] sm:rounded-[2.5rem]">
         <Hero />
         <StatsStrip />
         <BehindTheDecks />

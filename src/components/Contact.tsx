@@ -24,7 +24,7 @@ const links = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="border-t border-white/10 px-6 py-32 scroll-mt-16">
+    <section id="contact" className="border-t border-ember-line px-6 py-32 scroll-mt-16">
       <div className="mx-auto max-w-4xl">
         <motion.h2
           initial={{ opacity: 0, y: 24 }}
@@ -36,7 +36,7 @@ export default function Contact() {
           let&apos;s talk
         </motion.h2>
 
-        <ul className="divide-y divide-white/10 border-y border-white/10">
+        <ul className="divide-y divide-ember-line border-y border-ember-line">
           {links.map((link, i) => (
             <motion.li
               key={link.label}
@@ -50,7 +50,7 @@ export default function Contact() {
                 {...(link.external
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
-                className="group flex items-center justify-between py-7 transition-colors hover:bg-white/5 sm:px-4"
+                className="group flex items-center justify-between py-7 transition-colors hover:bg-ember/5 sm:px-4"
               >
                 <span className="flex items-center gap-4 text-lg font-medium sm:text-2xl">
                   <link.icon className="size-5 text-white/50 sm:size-6" />
