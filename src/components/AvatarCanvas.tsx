@@ -27,11 +27,13 @@ export default function AvatarCanvas({ className }: { className?: string }) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-    const keyLight = new THREE.DirectionalLight(0xffd9b0, 2.2);
+    // Neutral lights — the warm duotone comes from the .hero-portrait
+    // CSS filter, same treatment the original photo had
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
     keyLight.position.set(2, 3, 4);
     scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0xff6a2a, 1.4);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 1.2);
     rimLight.position.set(-3, 1, -3);
     scene.add(rimLight);
 
@@ -46,16 +48,24 @@ export default function AvatarCanvas({ className }: { className?: string }) {
       if (disposed) return;
       const model = gltf.scene;
 
-      // Center the model and frame the camera around it
+      // Center the model, then frame head-to-waist (top 58% of the body)
+      // to match the crop of the original portrait photo
       const box = new THREE.Box3().setFromObject(model);
       const size = box.getSize(new THREE.Vector3());
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
+
+      const visibleFraction = 0.58;
+      const framedHeight = size.y * visibleFraction;
+      // Shift the model down so the framed region is centered at the origin
+      model.position.y -= (size.y - framedHeight) / 2;
       swayGroup.add(model);
 
-      const fitDistance =
-        (size.y / 2 / Math.tan((camera.fov * Math.PI) / 360)) * 1.15;
-      camera.position.set(0, 0, Math.max(fitDistance, size.z));
+      const halfFov = (camera.fov * Math.PI) / 360;
+      const fitHeight = (framedHeight / 2 / Math.tan(halfFov)) * 1.08;
+      const fitWidth =
+        (size.x / 2 / Math.tan(halfFov) / Math.max(camera.aspect, 0.1)) * 1.05;
+      camera.position.set(0, 0, Math.max(fitHeight, fitWidth, size.z));
       camera.lookAt(0, 0, 0);
     });
 
