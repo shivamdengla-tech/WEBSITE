@@ -2,8 +2,13 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { decks } from "../data/decks";
 
-const BODY =
-  "I'm a dual degree student at BITS Pilani, Goa, but most of what I do happens outside the classroom. I spend my time on two things that look unrelated until you watch me do them: closing deals and taking industries apart to understand how they actually work. I've generated over $40K in sales as a student, closed 9 national brand sponsorships before the end of my sophomore year, and I run a 3,000+ student community day to day. The rest of my time goes into writing, long and slightly obsessive breakdowns of why vapes, fragrances, sachets and potato chips are built exactly the way they are. If a market has a hidden logic, I want to find it.";
+const PARAGRAPHS = [
+  "BITS Pilani, Goa. Dual degree. Most of what matters happened outside the classroom.",
+  "$40K+ in sales as a student. 9 national brand sponsorships — Pringles, TagZ, Storia, Lotte, and five more — closed before the sophomore year ended. Running a 3,000+ student community. JEE Advanced AIR ~9K. AA UK Scholar.",
+];
+
+const PARAGRAPH_MUTED =
+  "Now shifting obsessions. I want to understand why products win markets, not just sell them. The teardowns, the research, the decks — that's me trying to reverse-engineer what everyone else takes for granted.";
 
 function Char({
   char,
@@ -22,7 +27,13 @@ function Char({
   return <motion.span style={{ opacity }}>{char}</motion.span>;
 }
 
-function RevealParagraph({ text }: { text: string }) {
+function RevealParagraph({
+  text,
+  muted = false,
+}: {
+  text: string;
+  muted?: boolean;
+}) {
   const ref = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -33,7 +44,9 @@ function RevealParagraph({ text }: { text: string }) {
   return (
     <p
       ref={ref}
-      className="text-xl font-light leading-relaxed text-white sm:text-2xl md:text-3xl"
+      className={`text-xl font-light leading-relaxed sm:text-2xl md:text-3xl ${
+        muted ? "text-white/50" : "text-white"
+      }`}
     >
       {chars.map((char, i) => (
         <Char
@@ -55,6 +68,7 @@ export default function About() {
         src={decks[1].cover}
         alt=""
         aria-hidden
+        loading="lazy"
         initial={{ opacity: 0, rotate: -12 }}
         whileInView={{ opacity: 1, rotate: -8 }}
         viewport={{ once: true }}
@@ -65,6 +79,7 @@ export default function About() {
         src={decks[4].cover}
         alt=""
         aria-hidden
+        loading="lazy"
         initial={{ opacity: 0, rotate: 12 }}
         whileInView={{ opacity: 1, rotate: 8 }}
         viewport={{ once: true }}
@@ -82,7 +97,12 @@ export default function About() {
         >
           about me
         </motion.h2>
-        <RevealParagraph text={BODY} />
+        <div className="space-y-10">
+          {PARAGRAPHS.map((text) => (
+            <RevealParagraph key={text} text={text} />
+          ))}
+          <RevealParagraph text={PARAGRAPH_MUTED} muted />
+        </div>
       </div>
     </section>
   );

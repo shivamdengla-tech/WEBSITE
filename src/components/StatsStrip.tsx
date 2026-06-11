@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 
 const stats = [
-  "$40K+ in Sales",
-  "9 National Brands",
-  "3,000+ Community",
-  "6 Industry Decks",
+  "$40K+ Sales generated",
+  "9 National brand deals",
+  "3,000+ Community members",
+  "5 Industry teardowns",
 ];
 
 export default function StatsStrip() {

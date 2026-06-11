@@ -3,28 +3,28 @@ import { motion } from "framer-motion";
 const items = [
   {
     num: "01",
-    title: "Growth & Marketing",
-    desc: "building funnels and communities that actually convert.",
+    title: "Market Research & Teardowns",
+    desc: "vapes, chips, fragrances — if it has a hidden logic, I find it",
   },
   {
     num: "02",
-    title: "Partnerships & Sponsorships",
-    desc: "full cycle, from outreach to on-ground activation.",
+    title: "Product Thinking",
+    desc: "figuring out what should be built, and why it'll actually sell",
   },
   {
     num: "03",
-    title: "Sales & Business Development",
-    desc: "closing HORECA accounts like Taj Goa.",
+    title: "Partnerships & BD",
+    desc: "9 national brands, Taj Goa, all closed from cold outreach",
   },
   {
     num: "04",
     title: "Community Building",
-    desc: "Discord engagement loops and retention systems.",
+    desc: "3,000+ students, Discord systems, retention loops that work",
   },
   {
     num: "05",
-    title: "Industry Research & Writing",
-    desc: "the decks, the Substack, the teardowns.",
+    title: "VC & Investing",
+    desc: "early obsession — learning the pattern recognition",
   },
 ];
 

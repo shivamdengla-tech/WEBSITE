@@ -11,8 +11,11 @@ export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    // Desktop only — touch devices keep their native behaviour
-    setEnabled(window.matchMedia("(pointer: fine)").matches);
+    // Desktop only — touch devices and small screens keep native behaviour
+    setEnabled(
+      window.matchMedia("(pointer: fine)").matches &&
+        !window.matchMedia("(max-width: 768px)").matches,
+    );
   }, []);
 
   useEffect(() => {

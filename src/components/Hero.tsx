@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import AvatarCanvas from "./AvatarCanvas";
+import "../lib/gsapSetup";
 
 gsap.registerPlugin(ScrambleTextPlugin);
 
@@ -26,6 +27,24 @@ const TICKER_SPEED = 40; // px per second
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const tickerTrackRef = useRef<HTMLDivElement>(null);
+  const avatarBoxRef = useRef<HTMLDivElement>(null);
+
+  // Floating labels hide whenever the avatar canvas is narrower than 500px
+  // so they never crowd the face
+  useEffect(() => {
+    const avatarBox = avatarBoxRef.current;
+    if (!avatarBox) return;
+    const labels =
+      avatarBox.querySelectorAll<HTMLElement>("[data-float-label]");
+    const observer = new ResizeObserver(([entry]) => {
+      const wide = entry.contentRect.width >= 500;
+      labels.forEach((label) => {
+        label.style.display = wide ? "" : "none";
+      });
+    });
+    observer.observe(avatarBox);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -35,6 +54,7 @@ export default function Hero() {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     const ctx = gsap.context(() => {
       // Infinite marquee ticker, leftwards at a constant speed,
@@ -67,16 +87,32 @@ export default function Hero() {
           });
         });
 
-      // Page load sequence
-      gsap.set("[data-hero-nav]", { y: -16, opacity: 0 });
-      gsap.set("[data-hero-intro]", { opacity: 0, y: 12 });
-      gsap.set("[data-hero-avatar]", { opacity: 0, y: 80 });
-      gsap.set("[data-hero-blurb]", { opacity: 0, x: -24 });
-      gsap.set("[data-hero-ticker]", { opacity: 0, y: 24 });
-      gsap.set("[data-ticker-item]", { opacity: 0, y: 10 });
-      gsap.set("[data-float-label]", { opacity: 0, scale: 0.8 });
+      // Page load sequence. On mobile the tweens are opacity-only —
+      // no transform offsets — to keep the main thread light.
+      const m = (value: number) => (isMobile ? 0 : value);
+      const willChange = isMobile ? "opacity" : "transform, opacity";
+      gsap.set("[data-hero-nav]", { y: m(-16), opacity: 0, willChange });
+      gsap.set("[data-hero-intro]", { opacity: 0, y: m(12), willChange });
+      gsap.set("[data-hero-avatar]", { opacity: 0, y: m(80), willChange });
+      gsap.set("[data-hero-blurb]", { opacity: 0, x: m(-24), willChange });
+      gsap.set("[data-hero-ticker]", { opacity: 0, y: m(24), willChange });
+      gsap.set("[data-ticker-item]", { opacity: 0, y: m(10), willChange });
+      gsap.set("[data-float-label]", {
+        opacity: 0,
+        scale: isMobile ? 1 : 0.8,
+        willChange,
+      });
 
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        onComplete: () => {
+          // Drop the will-change hint once nothing is animating anymore
+          gsap.set(
+            "[data-hero-nav], [data-hero-intro], [data-hero-avatar], [data-hero-blurb], [data-hero-ticker], [data-ticker-item], [data-float-label]",
+            { clearProps: "willChange" },
+          );
+        },
+      });
       tl.to("[data-hero-nav]", { y: 0, opacity: 1, duration: 0.4 }, 0)
         .to("[data-hero-intro]", { y: 0, opacity: 1, duration: 0.5 }, 0.3);
 
@@ -141,24 +177,24 @@ export default function Hero() {
           data-hero-avatar
           className="pointer-events-none absolute inset-x-0 top-[6%] z-0 flex justify-center"
         >
-          <div className="relative">
+          <div ref={avatarBoxRef} className="relative">
             <AvatarCanvas className="hero-portrait h-[58vh] max-h-[600px] w-auto select-none aspect-[4/5]" />
-            {/* floating pill labels drifting around the avatar */}
+            {/* floating pill labels drifting around the avatar, clear of the face */}
             <span
               data-float-label
-              className="absolute -left-14 top-[22%] hidden rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm sm:block"
+              className="absolute left-5 top-5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
             >
               {floatingLabels[0]}
             </span>
             <span
               data-float-label
-              className="absolute -right-16 top-[38%] hidden rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm sm:block"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
             >
               {floatingLabels[1]}
             </span>
             <span
               data-float-label
-              className="absolute -left-10 bottom-[30%] hidden rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm sm:block"
+              className="absolute bottom-5 left-5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm"
             >
               {floatingLabels[2]}
             </span>

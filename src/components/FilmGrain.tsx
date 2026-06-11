@@ -1,28 +1,58 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function FilmGrain() {
   const turbulenceRef = useRef<SVGFETurbulenceElement>(null);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    // Film grain is desktop-only; it's pure overhead on mobile GPUs
+    setEnabled(!window.matchMedia("(max-width: 768px)").matches);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     const turbulence = turbulenceRef.current;
     if (!turbulence) return;
+
     let frame = 0;
     let last = 0;
+    let running = true;
     const start = performance.now();
     const tick = (now: number) => {
       frame = requestAnimationFrame(tick);
-      // Throttle to ~12fps and drift the frequency slowly: living grain
+      // ~6fps refresh with a slow frequency drift: living grain
       // without burning the main thread
-      if (now - last < 80) return;
+      if (now - last < 160) return;
       last = now;
       const t = (now - start) / 1000;
-      const freq = 0.8 + Math.sin(t * 0.7) * 0.05;
+      const freq = 0.8 + Math.sin(t * 0.35) * 0.05;
       turbulence.setAttribute("baseFrequency", `${freq}`);
-      turbulence.setAttribute("seed", `${Math.floor(t * 12) % 100}`);
+      turbulence.setAttribute("seed", `${Math.floor(t * 6) % 100}`);
     };
+
+    const play = () => {
+      if (running) return;
+      running = true;
+      frame = requestAnimationFrame(tick);
+    };
+    const pause = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+    const onVisibility = () => {
+      if (document.hidden) pause();
+      else play();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, []);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      cancelAnimationFrame(frame);
+    };
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <svg
