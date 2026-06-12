@@ -2,8 +2,9 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-const FLOAT_PERIOD = 3; // seconds per up/down loop
-const FLOAT_AMPLITUDE_PX = 2; // pixels of vertical travel
+const JUMP_PERIOD = 1.7; // seconds per jump cycle
+const JUMP_HEIGHT_PX = 24; // peak height of the jump in pixels
+const SQUASH = 0.05; // squash-and-stretch amount for bounce character
 const SWAY_MAX = THREE.MathUtils.degToRad(15); // auto left-right sway
 const SWAY_PERIOD = 6; // seconds for a full sway cycle
 const LOOK_MAX = THREE.MathUtils.degToRad(10); // cursor-tracking limit
@@ -96,14 +97,21 @@ export default function AvatarCanvas({ className }: { className?: string }) {
       frame = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      // Idle float: convert the pixel amplitude into world units at the camera
+      // Jump: convert the pixel height into world units at the camera plane
       const visibleHeight =
         2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
       const worldPerPixel = visibleHeight / (container.clientHeight || 1);
-      floatGroup.position.y =
-        Math.sin((t * Math.PI * 2) / FLOAT_PERIOD) *
-        FLOAT_AMPLITUDE_PX *
-        worldPerPixel;
+      // abs(sin) springs up from a resting baseline and falls back, reading as
+      // a bounce rather than a symmetric float
+      const jump = Math.abs(Math.sin((t * Math.PI) / JUMP_PERIOD));
+      floatGroup.position.y = jump * JUMP_HEIGHT_PX * worldPerPixel;
+      // squash on landing, stretch at the peak for a livelier jump
+      const stretch = (jump - 0.5) * 2; // -1 at landing, +1 at peak
+      swayGroup.scale.set(
+        1 - SQUASH * stretch, // narrower at peak, wider on landing
+        1 + SQUASH * stretch, // taller at peak, shorter on landing
+        1 - SQUASH * stretch,
+      );
 
       // Smoothly ease the look rotation toward the cursor
       pointer.lerp(pointerTarget, 0.06);
