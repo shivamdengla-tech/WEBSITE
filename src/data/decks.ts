@@ -42,4 +42,10 @@ export const decks: Deck[] = [
     file: "/decks/The%20Plastic%20Wait%20-%20Shivam%20Dengla.pdf",
     cover: "/decks/covers/the-plastic-wait.png",
   },
+  {
+    num: "07",
+    title: "Mokobara Case Study",
+    file: "/decks/MOKOBARA%20CASE%20STUDY.pdf",
+    cover: "/decks/covers/mokobara-case-study.png",
+  },
 ];
