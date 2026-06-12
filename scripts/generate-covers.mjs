@@ -11,6 +11,7 @@ const decks = [
   ["The Bottle Is the Product.pdf", "the-bottle-is-the-product"],
   ["The Bottle That Sells the Scent.pdf", "the-bottle-that-sells-the-scent"],
   ["The Plastic Wait - Shivam Dengla.pdf", "the-plastic-wait"],
+  ["MOKOBARA CASE STUDY.pdf", "mokobara-case-study"],
 ];
 
 const outDir = path.resolve("public/decks/covers");
