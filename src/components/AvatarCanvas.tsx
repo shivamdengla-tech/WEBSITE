@@ -2,12 +2,10 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-const JUMP_PERIOD = 1.7; // seconds per jump cycle
-const JUMP_HEIGHT_PX = 24; // peak height of the jump in pixels
-const SQUASH = 0.05; // squash-and-stretch amount for bounce character
-const SWAY_MAX = THREE.MathUtils.degToRad(15); // auto left-right sway
-const SWAY_PERIOD = 6; // seconds for a full sway cycle
-const LOOK_MAX = THREE.MathUtils.degToRad(10); // cursor-tracking limit
+const SWAY_MAX = THREE.MathUtils.degToRad(6); // gentle auto left-right sway
+const SWAY_PERIOD = 8; // seconds for a full sway cycle
+const LOOK_MAX = THREE.MathUtils.degToRad(12); // cursor-tracking rotation limit
+const FRAME_PADDING = 1.32; // headroom so the jump stays inside the frame
 
 export default function AvatarCanvas({ className }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,7 +15,7 @@ export default function AvatarCanvas({ className }: { className?: string }) {
     if (!container) return;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true, // transparent canvas so the hero gradient shows through
@@ -26,38 +24,61 @@ export default function AvatarCanvas({ className }: { className?: string }) {
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; // filmic, premium falloff
+    renderer.toneMappingExposure = 1.05;
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-    const keyLight = new THREE.DirectionalLight(0xffd9b0, 2.2);
-    keyLight.position.set(2, 3, 4);
+    // Soft, warm three-point lighting tuned to the ember hero
+    scene.add(new THREE.HemisphereLight(0xfff1e0, 0x2a0d04, 0.9));
+    const keyLight = new THREE.DirectionalLight(0xffe9d0, 2.4);
+    keyLight.position.set(2.5, 4, 4);
     scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0xff6a2a, 1.4);
-    rimLight.position.set(-3, 1, -3);
+    const rimLight = new THREE.DirectionalLight(0xff7a32, 2.2);
+    rimLight.position.set(-3.5, 2, -4);
     scene.add(rimLight);
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    fillLight.position.set(-2, 1, 3);
+    scene.add(fillLight);
 
-    // floatGroup handles the vertical idle bob, swayGroup the rotations
-    const floatGroup = new THREE.Group();
+    // swayGroup carries the model so rotations pivot around its centre
     const swayGroup = new THREE.Group();
-    floatGroup.add(swayGroup);
-    scene.add(floatGroup);
+    scene.add(swayGroup);
+
+    let mixer: THREE.AnimationMixer | undefined;
+    let modelSize = new THREE.Vector3(1, 2, 1);
+
+    // Fit the camera to the model's height (or width) with headroom for the jump
+    const frame = () => {
+      const fitH = modelSize.y / 2 / Math.tan((camera.fov * Math.PI) / 360);
+      const fitW =
+        modelSize.x / 2 / Math.tan((camera.fov * Math.PI) / 360) / camera.aspect;
+      const dist = Math.max(fitH, fitW) * FRAME_PADDING;
+      camera.position.set(0, 0, dist);
+      camera.lookAt(0, 0, 0);
+    };
 
     let disposed = false;
     new GLTFLoader().load("/avatar.glb", (gltf) => {
       if (disposed) return;
       const model = gltf.scene;
+      model.traverse((o) => {
+        if (o instanceof THREE.Mesh) o.frustumCulled = false; // jump can exit bbox
+      });
 
-      // Center the model and frame the camera around it
+      // Centre the model on all axes so it sits dead-centre in the frame
       const box = new THREE.Box3().setFromObject(model);
-      const size = box.getSize(new THREE.Vector3());
+      modelSize = box.getSize(new THREE.Vector3());
       const center = box.getCenter(new THREE.Vector3());
       model.position.sub(center);
       swayGroup.add(model);
 
-      const fitDistance =
-        (size.y / 2 / Math.tan((camera.fov * Math.PI) / 360)) * 1.15;
-      camera.position.set(0, 0, Math.max(fitDistance, size.z));
-      camera.lookAt(0, 0, 0);
+      frame();
+
+      // Play the avatar's baked animation (the idle/jump motion)
+      if (gltf.animations.length) {
+        mixer = new THREE.AnimationMixer(model);
+        mixer.clipAction(gltf.animations[0]).play();
+      }
     });
 
     const resize = () => {
@@ -66,12 +87,13 @@ export default function AvatarCanvas({ className }: { className?: string }) {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      frame();
     };
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(container);
 
-    // Cursor / touch tracking, normalized to -1..1 around the viewport center
+    // Cursor / touch tracking, normalised to -1..1 around the viewport centre
     const pointerTarget = new THREE.Vector2(0, 0);
     const pointer = new THREE.Vector2(0, 0);
     const trackPoint = (clientX: number, clientY: number) => {
@@ -92,32 +114,19 @@ export default function AvatarCanvas({ className }: { className?: string }) {
     document.documentElement.addEventListener("mouseleave", onPointerEnd);
 
     const clock = new THREE.Clock();
-    let frame = 0;
+    let elapsed = 0;
+    let frameId = 0;
     const animate = () => {
-      frame = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
+      frameId = requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+      elapsed += dt;
+      if (mixer) mixer.update(dt);
 
-      // Jump: convert the pixel height into world units at the camera plane
-      const visibleHeight =
-        2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
-      const worldPerPixel = visibleHeight / (container.clientHeight || 1);
-      // abs(sin) springs up from a resting baseline and falls back, reading as
-      // a bounce rather than a symmetric float
-      const jump = Math.abs(Math.sin((t * Math.PI) / JUMP_PERIOD));
-      floatGroup.position.y = jump * JUMP_HEIGHT_PX * worldPerPixel;
-      // squash on landing, stretch at the peak for a livelier jump
-      const stretch = (jump - 0.5) * 2; // -1 at landing, +1 at peak
-      swayGroup.scale.set(
-        1 - SQUASH * stretch, // narrower at peak, wider on landing
-        1 + SQUASH * stretch, // taller at peak, shorter on landing
-        1 - SQUASH * stretch,
-      );
-
-      // Smoothly ease the look rotation toward the cursor
-      pointer.lerp(pointerTarget, 0.06);
-      const sway = Math.sin((t * Math.PI * 2) / SWAY_PERIOD) * SWAY_MAX;
+      // Smoothly ease the look rotation toward the cursor, plus a slow idle sway
+      pointer.lerp(pointerTarget, 0.05);
+      const sway = Math.sin((elapsed * Math.PI * 2) / SWAY_PERIOD) * SWAY_MAX;
       swayGroup.rotation.y = sway + pointer.x * LOOK_MAX;
-      swayGroup.rotation.x = pointer.y * LOOK_MAX * 0.6;
+      swayGroup.rotation.x = pointer.y * LOOK_MAX * 0.35;
 
       renderer.render(scene, camera);
     };
@@ -125,12 +134,13 @@ export default function AvatarCanvas({ className }: { className?: string }) {
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(frame);
+      cancelAnimationFrame(frameId);
       observer.disconnect();
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onPointerEnd);
       document.documentElement.removeEventListener("mouseleave", onPointerEnd);
+      mixer?.stopAllAction();
       scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {
           obj.geometry.dispose();

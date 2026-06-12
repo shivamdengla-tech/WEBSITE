@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { decks } from "../data/decks";
 
-const featured = [decks[2], decks[3], decks[5]];
+// Feature the three newest decks, matching the "newest first" ordering
+const featured = decks.slice(0, 3);
 
 export default function BehindTheDecks() {
   return (

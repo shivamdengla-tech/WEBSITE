@@ -2,6 +2,9 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { decks } from "../data/decks";
 
+const cover = (title: string) =>
+  decks.find((d) => d.title === title)?.cover;
+
 const PARAGRAPHS = [
   "Third year at BITS Pilani, Goa. Chemist by degree. Product person by choice. Overthinker by default.",
   "Spends most of his time reading things nobody assigned, writing teardowns on industries nobody asked about, watching Netflix with too much analysis, and buying fragrances with money that should go elsewhere. Gym or long drives. Coffee always.",
@@ -55,7 +58,7 @@ export default function About() {
   return (
     <section id="about" className="relative px-6 py-32 scroll-mt-16">
       <motion.img
-        src={decks[1].cover}
+        src={cover("The Bottle Is the Product")}
         alt=""
         aria-hidden
         initial={{ opacity: 0, rotate: -12 }}
@@ -65,7 +68,7 @@ export default function About() {
         className="absolute left-4 top-10 hidden w-36 rounded-xl border border-white/10 opacity-80 lg:block"
       />
       <motion.img
-        src={decks[4].cover}
+        src={cover("The Bottle That Sells the Scent")}
         alt=""
         aria-hidden
         initial={{ opacity: 0, rotate: 12 }}
