@@ -74,7 +74,7 @@ export default function BehindTheDecks() {
             <img
               src={deck.cover}
               alt={`${deck.title} deck cover`}
-              className="aspect-video w-full object-cover grayscale transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+              className="aspect-video w-full object-cover transition-all duration-500 group-hover:scale-105"
               loading="lazy"
               draggable={false}
             />

@@ -2,8 +2,11 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { decks } from "../data/decks";
 
-const BODY =
-  "I'm a dual degree student at BITS Pilani, Goa, but most of what I do happens outside the classroom. I spend my time on two things that look unrelated until you watch me do them: closing deals and taking industries apart to understand how they actually work. I've generated over $40K in sales as a student, closed 9 national brand sponsorships before the end of my sophomore year, and I run a 3,000+ student community day to day. The rest of my time goes into writing, long and slightly obsessive breakdowns of why vapes, fragrances, sachets and potato chips are built exactly the way they are. If a market has a hidden logic, I want to find it.";
+const PARAGRAPHS = [
+  "Third year at BITS Pilani, Goa. Chemist by degree. Product person by choice. Overthinker by default.",
+  "Spends most of his time reading things nobody assigned, writing teardowns on industries nobody asked about, watching Netflix with too much analysis, and buying fragrances with money that should go elsewhere. Gym or long drives. Coffee always.",
+  "The hustle chapter was fun. Now on the product and markets chapter and it is considerably more interesting.",
+];
 
 function Char({
   char,
@@ -82,7 +85,11 @@ export default function About() {
         >
           about me
         </motion.h2>
-        <RevealParagraph text={BODY} />
+        <div className="space-y-6">
+          {PARAGRAPHS.map((text, i) => (
+            <RevealParagraph key={i} text={text} />
+          ))}
+        </div>
       </div>
     </section>
   );
