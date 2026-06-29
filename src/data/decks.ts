@@ -48,4 +48,22 @@ export const decks: Deck[] = [
     file: "/decks/MOKOBARA%20CASE%20STUDY.pdf",
     cover: "/decks/covers/mokobara-case-study.png",
   },
+  {
+    num: "08",
+    title: "Birkenstock Teardown",
+    file: "/decks/Birkenstock%20Teardown.pdf",
+    cover: "/decks/covers/birkenstock-teardown.png",
+  },
+  {
+    num: "09",
+    title: "Icecream",
+    file: "/decks/ICECREAM%201.pdf",
+    cover: "/decks/covers/icecream.png",
+  },
+  {
+    num: "10",
+    title: "Maka Di Case Study",
+    file: "/decks/Maka%20Di%20Case%20Study.pdf",
+    cover: "/decks/covers/maka-di-case-study.png",
+  },
 ];
