@@ -1,9 +1,11 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
-import { decks } from "../data/decks";
 
-const BODY =
-  "I'm a dual degree student at BITS Pilani, Goa, but most of what I do happens outside the classroom. I spend my time on two things that look unrelated until you watch me do them: closing deals and taking industries apart to understand how they actually work. I've generated over $40K in sales as a student, closed 9 national brand sponsorships before the end of my sophomore year, and I run a 3,000+ student community day to day. The rest of my time goes into writing, long and slightly obsessive breakdowns of why vapes, fragrances, sachets and potato chips are built exactly the way they are. If a market has a hidden logic, I want to find it.";
+const PARAGRAPHS = [
+  "Third year at BITS Pilani, Goa. Chemist by degree. Product person by choice. Overthinker by default.",
+  "Spends most of his time reading things nobody assigned, writing teardowns on industries nobody asked about, watching Netflix with too much analysis, and buying fragrances with money that should go elsewhere. Gym or long drives. Coffee always.",
+  "The hustle chapter was fun. Now on the product and markets chapter and it is considerably more interesting.",
+];
 
 function Char({
   char,
@@ -22,29 +24,38 @@ function Char({
   return <motion.span style={{ opacity }}>{char}</motion.span>;
 }
 
-function RevealParagraph({ text }: { text: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
+function RevealText({ paragraphs }: { paragraphs: string[] }) {
+  const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 0.85", "end 0.45"],
   });
-  const chars = text.split("");
+  const total = paragraphs.reduce((sum, p) => sum + p.length, 0);
+  let offset = 0;
 
   return (
-    <p
-      ref={ref}
-      className="text-xl font-light leading-relaxed text-white sm:text-2xl md:text-3xl"
-    >
-      {chars.map((char, i) => (
-        <Char
-          key={i}
-          char={char}
-          index={i}
-          total={chars.length}
-          progress={scrollYProgress}
-        />
-      ))}
-    </p>
+    <div ref={ref} className="space-y-6">
+      {paragraphs.map((para, pi) => {
+        const startOffset = offset;
+        offset += para.length;
+        return (
+          <p
+            key={pi}
+            className="text-xl font-light leading-relaxed text-white sm:text-2xl md:text-3xl"
+          >
+            {para.split("").map((char, i) => (
+              <Char
+                key={i}
+                char={char}
+                index={startOffset + i}
+                total={total}
+                progress={scrollYProgress}
+              />
+            ))}
+          </p>
+        );
+      })}
+    </div>
   );
 }
 
@@ -52,7 +63,7 @@ export default function About() {
   return (
     <section id="about" className="relative px-6 py-32 scroll-mt-16">
       <motion.img
-        src={decks[1].cover}
+        src="/decks/covers/beyond-the-sachet.png"
         alt=""
         aria-hidden
         initial={{ opacity: 0, rotate: -12 }}
@@ -62,7 +73,7 @@ export default function About() {
         className="absolute left-4 top-10 hidden w-36 rounded-xl border border-white/10 opacity-80 lg:block"
       />
       <motion.img
-        src={decks[4].cover}
+        src="/decks/covers/the-bottle-that-sells-the-scent.png"
         alt=""
         aria-hidden
         initial={{ opacity: 0, rotate: 12 }}
@@ -82,7 +93,7 @@ export default function About() {
         >
           about me
         </motion.h2>
-        <RevealParagraph text={BODY} />
+        <RevealText paragraphs={PARAGRAPHS} />
       </div>
     </section>
   );
