@@ -5,18 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "covers": "node scripts/generate-covers.mjs",
-    "prebuild": "node scripts/generate-covers.mjs",
-    "build": "tsc -b && vite build",
+    "covers": "node scripts/generate-covers.mjs && node scripts/optimize-covers.mjs",
+    "prebuild": "node scripts/generate-covers.mjs && node scripts/optimize-covers.mjs",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/three": "^0.184.1",
-    "framer-motion": "^11.18.2",
+    "@fontsource-variable/archivo": "^5.2.8",
+    "@fontsource-variable/newsreader": "^5.2.10",
+    "@fontsource/space-mono": "^5.2.9",
     "lucide-react": "^0.474.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "three": "^0.184.0"
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@napi-rs/canvas": "^0.1.65",
