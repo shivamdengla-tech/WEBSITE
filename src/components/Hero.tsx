@@ -82,7 +82,7 @@ export default function Hero() {
               industries apart to learn why they sell, then I sell them.
             </p>
             <p className="mt-4 max-w-[52ch] font-mono text-label uppercase text-ink-soft">
-              Head of Sponsorships, DOSM · BITS Goa — BD @ Toffee Doodle — 3,000+
+              Growth @ MathonGo — Head of Sponsorships, DOSM · BITS Goa — 3,000+
               community — new teardown decks weekly
             </p>
             <p className="mt-6">
