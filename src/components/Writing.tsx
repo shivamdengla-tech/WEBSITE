@@ -1,46 +1,43 @@
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { SITE } from "../lib/site";
 
 export default function Writing() {
   return (
-    <section id="writing" className="px-6 py-32">
-      <div className="mx-auto max-w-4xl text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="gradient-text text-5xl font-bold tracking-tight sm:text-6xl"
-        >
-          writing
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-          className="mx-auto mt-8 max-w-2xl text-xl font-light text-white/70 sm:text-2xl"
-        >
-          I write long, obsessive breakdowns of how consumer industries
-          actually work.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-          className="mt-10"
-        >
+    <section id="writing" className="scroll-mt-16 border-b border-line">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-x-6 gap-y-10 px-6 py-24 sm:px-10 md:py-32">
+        <div className="reveal col-span-12 md:col-span-6">
+          <p className="font-mono text-label uppercase text-ember">Writing</p>
+          <h2 className="mt-4 max-w-[16ch] text-title font-semibold text-cream">
+            The desk, in your inbox
+          </h2>
+          <p className="mt-6 max-w-[44ch] font-serif text-lg text-gray">
+            Every teardown starts as a letter: the question, the research, the
+            argument. New decks ship every week — subscribers read them first.
+          </p>
           <a
-            href="https://shivamdengla.substack.com/"
+            href={SITE.substack}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#0C0C0C] transition-transform hover:scale-105"
+            className="link mt-6 inline-flex items-center gap-1.5 font-mono text-sm text-gray hover:text-cream"
           >
-            Read on Substack
-            <ArrowUpRight className="size-4 transition-transform group-hover:rotate-45" />
+            Browse the archive on Substack
+            <ArrowUpRight aria-hidden className="size-4" strokeWidth={1.5} />
           </a>
-        </motion.div>
+        </div>
+        <div className="reveal col-span-12 md:col-span-5 md:col-start-8">
+          <div className="rounded-media border border-line bg-ink-card p-2">
+            {/* Inline subscribe — the conversion stays on the page */}
+            <iframe
+              src="https://shivamdengla.substack.com/embed"
+              title="Subscribe to Shivam Dengla's Substack"
+              loading="lazy"
+              className="h-[300px] w-full rounded-[2px] border-0 bg-ink-card"
+            />
+          </div>
+          <p className="mt-3 font-mono text-label uppercase text-gray-dim">
+            No spam — just the decks, weekly.
+          </p>
+        </div>
       </div>
     </section>
   );

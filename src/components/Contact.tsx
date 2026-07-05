@@ -1,70 +1,57 @@
-import { motion } from "framer-motion";
-import { Mail, Linkedin, Newspaper, ArrowUpRight } from "lucide-react";
-
-const links = [
-  {
-    label: "shivamdengla26@gmail.com",
-    href: "mailto:shivamdengla26@gmail.com",
-    icon: Mail,
-    external: false,
-  },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/shivamdengla/",
-    icon: Linkedin,
-    external: true,
-  },
-  {
-    label: "Substack",
-    href: "https://shivamdengla.substack.com/",
-    icon: Newspaper,
-    external: true,
-  },
-];
+import { ArrowUpRight } from "lucide-react";
+import { SITE } from "../lib/site";
 
 export default function Contact() {
   return (
-    <section id="contact" className="border-t border-white/10 px-6 py-32 scroll-mt-16">
-      <div className="mx-auto max-w-4xl">
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="gradient-text mb-16 text-5xl font-bold tracking-tight sm:text-7xl"
-        >
-          let&apos;s talk
-        </motion.h2>
+    <section id="contact" className="scroll-mt-16">
+      <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 md:py-32">
+        <div className="reveal grid grid-cols-12 gap-x-6">
+          <p className="col-span-12 flex items-center gap-2 font-mono text-label uppercase text-gray-dim">
+            <span aria-hidden className="size-1.5 rounded-full bg-ember" />
+            Open to product roles &amp; internships
+          </p>
+          <h2 className="col-span-12 mt-6 max-w-[18ch] text-title font-semibold text-cream">
+            Hiring for product? Let&apos;s talk.
+          </h2>
+          <p className="col-span-12 mt-6 max-w-[46ch] font-serif text-lg text-gray md:col-span-7">
+            The fastest way to evaluate me is a teardown and a conversation.
+            Email works best — say which deck you read and what you disagreed
+            with.
+          </p>
+        </div>
 
-        <ul className="divide-y divide-white/10 border-y border-white/10">
-          {links.map((link, i) => (
-            <motion.li
-              key={link.label}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
-            >
+        <div className="reveal mt-12">
+          <a
+            href={`mailto:${SITE.email}`}
+            className="group inline-block border-b-2 border-line-strong pb-2 text-2xl font-semibold tracking-tight text-cream transition-colors duration-[140ms] hover:border-ember sm:text-4xl"
+          >
+            {SITE.email}
+          </a>
+          <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
+            <li>
               <a
-                href={link.href}
-                {...(link.external
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-                className="group flex items-center justify-between py-7 transition-colors hover:bg-white/5 sm:px-4"
+                href={SITE.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link inline-flex items-center gap-1.5 font-mono text-sm text-gray hover:text-cream"
               >
-                <span className="flex items-center gap-4 text-lg font-medium sm:text-2xl">
-                  <link.icon className="size-5 text-white/50 sm:size-6" />
-                  {link.label}
-                </span>
-                <ArrowUpRight className="size-5 text-white/40 transition-transform group-hover:rotate-45 group-hover:text-white sm:size-6" />
+                LinkedIn
+                <ArrowUpRight aria-hidden className="size-4" strokeWidth={1.5} />
               </a>
-            </motion.li>
-          ))}
-        </ul>
-
-        <p className="mt-16 text-sm font-light text-white/40">
-          Shivam Dengla. Built with React, Tailwind and Framer Motion.
-        </p>
+            </li>
+            <li>
+              <a
+                href={SITE.substack}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link inline-flex items-center gap-1.5 font-mono text-sm text-gray hover:text-cream"
+              >
+                Substack
+                <ArrowUpRight aria-hidden className="size-4" strokeWidth={1.5} />
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   );

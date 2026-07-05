@@ -1,25 +1,36 @@
-import Hero from "./components/Hero";
-import StatsStrip from "./components/StatsStrip";
-import BehindTheDecks from "./components/BehindTheDecks";
-import About from "./components/About";
-import WhatIDo from "./components/WhatIDo";
-import Decks from "./components/Decks";
-import Writing from "./components/Writing";
-import Contact from "./components/Contact";
+import { useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import Nav from "./components/Nav";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import DeckPage from "./pages/DeckPage";
+import NotFound from "./pages/NotFound";
+import { useReveals } from "./lib/reveal";
+import { metaForPath } from "./routes";
+
+function ClientEffects() {
+  const { pathname, hash } = useLocation();
+  useReveals();
+  useEffect(() => {
+    document.title = metaForPath(pathname).title;
+    if (!hash) window.scrollTo(0, 0);
+  }, [pathname, hash]);
+  return null;
+}
 
 export default function App() {
   return (
-    <main className="p-3 text-white sm:p-5">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#0C0C0C] sm:rounded-[2.5rem]">
-        <Hero />
-        <StatsStrip />
-        <BehindTheDecks />
-        <About />
-        <WhatIDo />
-        <Decks />
-        <Writing />
-        <Contact />
-      </div>
-    </main>
+    <div className="flex min-h-screen flex-col">
+      <ClientEffects />
+      <Nav />
+      <main id="main" className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/decks/:slug" element={<DeckPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 }
