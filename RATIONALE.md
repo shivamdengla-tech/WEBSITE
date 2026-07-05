@@ -60,3 +60,16 @@ Companion to [`AUDIT.md`](AUDIT.md) (what was wrong), [`STRATEGY.md`](STRATEGY.m
 - View-Transitions API for cross-page cover morphs (progressive enhancement where supported).
 - Per-deck OG images with the accent + stat baked in (the raw covers are already good).
 - `public/image.png` / `public/portrait.png` are now unused (1.9 MB combined) — kept in-repo deliberately in case the portrait returns in About; delete if not.
+
+---
+
+## Addendum — the "Sticker Desk" restyle (second pass, same day)
+
+Shivam's direction after seeing the dark build: a colorful, personal, neo-brutalist look (reference: kristi.digital-style — cream canvas, ink outlines, hard shadows, sticker shapes), photo-free, with all content preserved. Decisions made together: **playful home + calmer case pages · multi-color palette on cream · deck covers as the hero's sticker stack · "Hi, I'm Shivam" greeting first.**
+
+What changed and what didn't:
+
+- **Changed:** the entire surface — light cream canvas, 2px ink outlines, hard offset shadows, chunky uppercase display type, sticker palette (violet/pink/yellow/mint/teal/purple + ember CTA), hero greeting + tilted cover stack with idle drift, Range as 2×2 icon-badge cards, contact as a violet panel, violet-monogram favicon. Photos deleted at Shivam's request (`image.png`, `portrait.png`, `make-portrait.mjs`).
+- **Unchanged:** every word of content, the IA and journey, SSG/SEO (meta, OG, JSON-LD, sitemap), per-deck case-study pages, accessibility contracts (focus ring, reduced motion, landmarks), and the token discipline — the restyle was executed by swapping the token layer + component skins, which is exactly what the system was built for.
+- **Contrast strategy for a 10-color palette:** accents are *fills carrying ink text* (all measured ≥ 5.9:1), never small colored text on the canvas. The About word-reveal floor rose to 0.6 (4.66:1 on cream).
+- **Measured after restyle:** Lighthouse (throttled mobile) home **99 / 100 / 100 / 100**, LCP 2.1 s, CLS 0 (first hero cover preloaded + `fetchpriority=high`); zero console/hydration errors; keyboard, menu, filter, and reduced-motion passes green; no horizontal scroll (`overflow-x: clip` + edge doodles verified).

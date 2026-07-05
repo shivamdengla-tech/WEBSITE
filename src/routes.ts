@@ -1,4 +1,4 @@
-import { decks } from "./data/decks";
+import { coverSrc, decks } from "./data/decks";
 import { PageMeta, SITE } from "./lib/site";
 
 /** All statically generated routes (consumed by scripts/prerender.mjs). */
@@ -36,6 +36,7 @@ export function metaForPath(path: string): PageMeta {
       title: "Shivam Dengla — why things sell",
       description: SITE.description,
       path: "/",
+      preloadImage: coverSrc(decks[0], 640),
     };
   }
   return {

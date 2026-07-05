@@ -1,9 +1,11 @@
 /* ============================================================
-   DESIGN TOKENS — single source of truth.
-   Nothing in src/ may use a raw color, size, or easing that
-   is not defined here. See DESIGN-SYSTEM.md for usage rules
-   and measured WCAG ratios.
-   Consumed by Tailwind v4 via @theme (imported from src/index.css).
+   DESIGN TOKENS — single source of truth. "Sticker Desk" theme:
+   warm cream canvas, ink outlines, hard offset shadows, a multi-
+   color sticker palette. Accent colors are FILLS carrying ink
+   text (every fill measured ≥ 5.9:1 with ink — see DESIGN-SYSTEM.md);
+   accents are never used as small text on the canvas.
+   Nothing in src/ may use a raw color, size, or easing that is
+   not defined here. Consumed by Tailwind v4 via @theme.
    ============================================================ */
 
 @theme {
@@ -13,54 +15,49 @@
   --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", monospace;
   --font-sans: var(--font-display);
 
-  /* ---- Color: warm near-black canvas ramp (dark mode is default) ---- */
-  --color-ink: #0d0b09; /* page canvas */
-  --color-ink-raised: #14110e; /* raised panels */
-  --color-ink-card: #171310; /* cards / wells */
-  --color-ink-edge: #2a241f; /* strong borders */
+  /* ---- Surfaces ---- */
+  --color-paper: #faf3e9; /* page canvas (warm cream) */
+  --color-panel: #fffdf7; /* cards / wells (warm white) */
+  --color-panel-dim: #f3ead9; /* pressed / secondary wells */
 
-  /* ---- Color: warm paper (inverted sections) ---- */
-  --color-paper: #f3efe7;
-  --color-paper-dim: #e9e3d7;
+  /* ---- Ink (text AND borders — measured on cream) ---- */
+  --color-ink: #17140f; /* primary text + outlines   16.7:1 */
+  --color-ink-soft: #5d564a; /* secondary text             6.6:1 */
+  --color-line: rgb(23 20 15 / 0.15); /* hairlines */
 
-  /* ---- Text ramps (measured contrast in DESIGN-SYSTEM.md) ---- */
-  --color-cream: #f3efe7; /* primary on ink        17.1:1 */
-  --color-gray: #c9c0b4; /* secondary on ink      10.9:1 */
-  --color-gray-dim: #9a8f81; /* tertiary on ink        6.2:1 */
-  --color-ink-text: #141110; /* primary on paper      16.4:1 */
-  --color-ink-soft: #5c554b; /* secondary on paper     6.4:1 */
+  /* ---- The hot accent (CTA fill; deep variant for text/focus) ---- */
+  --color-ember: #ff5c1c; /* fill: ink text on it = 6.0:1 */
+  --color-ember-deep: #b33a0a; /* as text on cream = 5.4:1 */
 
-  /* ---- Hairlines (ledger rules) ---- */
-  --color-line: rgb(243 239 231 / 0.14); /* on ink */
-  --color-line-strong: rgb(243 239 231 / 0.28);
-  --color-line-ink: rgb(20 17 14 / 0.18); /* on paper */
+  /* ---- Sticker palette (fills; ink text ≥ 6.7:1 on all) ---- */
+  --color-violet: #8b93f8;
+  --color-pink: #f76baf;
+  --color-yellow: #f8c931;
+  --color-mint: #7be0ad;
+  --color-teal: #46c9a9;
+  --color-purple: #b9a8f9;
 
-  /* ---- The one hot accent ---- */
-  --color-ember: #ff5c1c; /* on ink 6.4:1 — AA for all text sizes */
-  --color-ember-deep: #b33a0a; /* on paper 5.2:1 — AA */
-
-  /* ---- Per-teardown accents (index markers, key stats, hovers;
-          each ≥ 4.5:1 on ink — ratios in DESIGN-SYSTEM.md) ---- */
-  --color-deck-vapes: #a78bfa;
-  --color-deck-sachet: #ff5c1c;
-  --color-deck-chip: #ffa02e;
-  --color-deck-bottle-product: #ff4d8d;
-  --color-deck-bottle-scent: #d8cdba;
-  --color-deck-plastic: #35d07f;
+  /* ---- Per-teardown accents (fills only; ink text ≥ 8.3:1) ---- */
+  --color-deck-vapes: #b9a8f9;
+  --color-deck-sachet: #ff9264;
+  --color-deck-chip: #ffb84d;
+  --color-deck-bottle-product: #f76baf;
+  --color-deck-bottle-scent: #ebdfc8;
+  --color-deck-plastic: #6fdda4;
   --color-deck-mokobara: #f5b324;
-  --color-deck-birkenstock: #ff7ab8;
-  --color-deck-scoop: #ffb4c4;
-  --color-deck-makadi: #d9b23f;
+  --color-deck-birkenstock: #ffa9ce;
+  --color-deck-scoop: #ffd1dc;
+  --color-deck-makadi: #f0cc4f;
 
-  /* ---- Type scale (major-third-ish, editorial jumps at the top) ---- */
-  --text-label: 0.6875rem; /* 11px — mono metadata, tracked caps  */
+  /* ---- Type scale (editorial jumps at the top; display = chunky caps) ---- */
+  --text-label: 0.6875rem; /* 11px — mono metadata, tracked caps */
   --text-label--line-height: 1.5;
   --text-label--letter-spacing: 0.14em;
   --text-sm: 0.875rem; /* 14px */
   --text-base: 1rem; /* 16px */
-  --text-lg: 1.1875rem; /* 19px  — serif body/reading size */
+  --text-lg: 1.1875rem; /* 19px — serif reading size */
   --text-lg--line-height: 1.65;
-  --text-xl: 1.375rem; /* 22px  — serif lede */
+  --text-xl: 1.375rem; /* 22px — serif lede */
   --text-xl--line-height: 1.55;
   --text-2xl: 1.75rem; /* 28px */
   --text-2xl--line-height: 1.3;
@@ -68,19 +65,26 @@
   --text-3xl--line-height: 1.15;
   --text-4xl: 3rem; /* 48px */
   --text-4xl--line-height: 1.05;
-  --text-stat: clamp(2.75rem, 6vw, 4.5rem); /* key stats */
-  --text-stat--line-height: 1;
+  --text-stat: clamp(2.5rem, 5.5vw, 4rem); /* key stats */
+  --text-stat--line-height: 1.05;
   --text-stat--letter-spacing: -0.02em;
-  --text-title: clamp(2.5rem, 5.5vw, 4.75rem); /* page/case titles */
-  --text-title--line-height: 0.98;
-  --text-title--letter-spacing: -0.025em;
-  --text-display: clamp(3.25rem, 9.5vw, 8.5rem); /* hero only */
-  --text-display--line-height: 0.92;
-  --text-display--letter-spacing: -0.03em;
+  --text-title: clamp(2.25rem, 5vw, 4.25rem); /* page/case titles */
+  --text-title--line-height: 1;
+  --text-title--letter-spacing: -0.02em;
+  --text-display: clamp(2.75rem, 6.5vw, 5.5rem); /* hero only, uppercase */
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.015em;
 
-  /* ---- Radius: editorial = sharp. Two exceptions, nothing else. ---- */
-  --radius-ctl: 2px; /* interactive controls */
-  --radius-media: 4px; /* images / embeds */
+  /* ---- Radius: chunky and friendly ---- */
+  --radius-ctl: 0.75rem; /* buttons, inputs, tags */
+  --radius-media: 0.875rem; /* images / embeds */
+  --radius-card: 1.25rem; /* cards / panels */
+  --radius-badge: 999px; /* pills / status badges */
+
+  /* ---- Hard offset shadows (the sticker signature) ---- */
+  --shadow-sticker: 4px 4px 0 0 var(--color-ink);
+  --shadow-sticker-lg: 7px 7px 0 0 var(--color-ink);
+  --shadow-sticker-sm: 2px 2px 0 0 var(--color-ink);
 
   /* ---- Motion ---- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

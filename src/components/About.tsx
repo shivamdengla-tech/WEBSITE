@@ -6,7 +6,7 @@ const BODY =
 /**
  * Scroll-linked word reveal. SSG markup renders every word at full
  * opacity; when JS runs, each word's opacity tracks scroll progress with
- * a 35% floor so the paragraph is always readable (the old build used a
+ * a 60% floor so the paragraph is always readable (the old build used a
  * 12% per-character floor — invisible at rest and ~600 DOM spans; words
  * cut the span count ~5x and never fail contrast).
  */
@@ -46,7 +46,7 @@ function ScrollProse({ text }: { text: string }) {
   return (
     <p
       ref={ref}
-      className="word-reveal max-w-[36ch] font-serif text-xl text-cream sm:text-2xl"
+      className="word-reveal max-w-[38ch] font-serif text-xl sm:text-2xl"
     >
       {text.split(" ").map((word, i) => (
         <span key={i}>{word} </span>
@@ -57,11 +57,11 @@ function ScrollProse({ text }: { text: string }) {
 
 export default function About() {
   return (
-    <section id="about" className="scroll-mt-16 border-b border-line">
-      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-x-6 px-6 py-24 sm:px-10 md:py-32">
+    <section id="about" className="scroll-mt-16">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-x-6 px-6 py-20 sm:px-10 md:py-28">
         <div className="reveal col-span-12 md:col-span-3">
-          <p className="font-mono text-label uppercase text-ember">About</p>
-          <h2 className="mt-4 text-3xl font-semibold text-cream">
+          <p className="font-mono text-label uppercase text-ember-deep">About</p>
+          <h2 className="mt-4 text-3xl font-black uppercase">
             Reads things nobody assigned
           </h2>
         </div>

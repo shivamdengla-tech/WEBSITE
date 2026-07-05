@@ -36,8 +36,8 @@ export default function Nav() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-[280ms] ${
         scrolled || open
-          ? "border-b border-line bg-ink/85 backdrop-blur-md"
-          : "border-b border-transparent"
+          ? "border-b-2 border-ink bg-paper/90 backdrop-blur-md"
+          : "border-b-2 border-transparent"
       }`}
     >
       <a href="#main" className="skip-link">
@@ -47,7 +47,13 @@ export default function Nav() {
         aria-label="Primary"
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 sm:px-10"
       >
-        <Link to="/" className="font-semibold tracking-tight text-cream">
+        <Link to="/" className="flex items-center gap-2.5 font-bold tracking-tight">
+          <span
+            aria-hidden
+            className="flex size-8 items-center justify-center rounded-ctl border-2 border-ink bg-violet font-mono text-sm font-bold shadow-sticker-sm"
+          >
+            S
+          </span>
           Shivam Dengla
         </Link>
 
@@ -55,20 +61,23 @@ export default function Nav() {
           <ul className="flex items-center gap-7">
             {links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="navlink text-sm text-gray hover:text-cream">
+                <a href={l.href} className="navlink text-base font-medium">
                   {l.label}
                 </a>
               </li>
             ))}
           </ul>
-          <a href="mailto:shivamdengla26@gmail.com" className="btn-quiet !px-4 !py-2.5">
+          <a
+            href="mailto:shivamdengla26@gmail.com"
+            className="btn-quiet bg-violet !px-4 !py-2.5 !text-sm"
+          >
             Email me
           </a>
         </div>
 
         <button
           type="button"
-          className="btn-quiet !px-4 !py-2.5 md:hidden"
+          className="btn-quiet !px-4 !py-2.5 !text-sm md:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
@@ -81,21 +90,21 @@ export default function Nav() {
         id="mobile-nav"
         ref={panelRef}
         hidden={!open}
-        className="border-t border-line bg-ink md:hidden"
+        className="border-t-2 border-ink bg-paper md:hidden"
       >
         <ul className="px-6 py-4">
           {links.map((l) => (
             <li key={l.href} className="border-b border-line last:border-b-0">
               <a
                 href={l.href}
-                className="block py-4 text-2xl text-cream"
+                className="block py-4 text-2xl font-semibold"
                 onClick={() => setOpen(false)}
               >
                 {l.label}
               </a>
             </li>
           ))}
-          <li className="pt-5 pb-2">
+          <li className="pb-2 pt-5">
             <a href="mailto:shivamdengla26@gmail.com" className="btn-primary">
               Email me
             </a>

@@ -1,69 +1,61 @@
-# DESIGN-SYSTEM.md — "Editorial Product Desk"
+# DESIGN-SYSTEM.md — "Sticker Desk"
 
-The system sharpens the site's existing DNA — burnt orange on near-black, one warm inverted mode, oversized grotesque display, index numbering, ledger rules — into tokens and rules. Source of truth: [`design-system/tokens.css`](design-system/tokens.css) (Tailwind v4 `@theme`; every utility class the app uses resolves to these variables). Component specs: [`design-system/components.md`](design-system/components.md).
+A warm, colorful neo-brutalist system: cream canvas, ink outlines, hard offset shadows, a multi-color sticker palette — playful on the home page, calmer on the case-study pages, one language everywhere. It keeps the editorial bones of the first system (mono index numbering, ledger rows, serif reading face, per-teardown accents) and re-dresses them.
 
-**The governing rule: no raw values.** If a color, size, radius, or easing isn't a token, it doesn't ship.
+Source of truth: [`design-system/tokens.css`](design-system/tokens.css) (Tailwind v4 `@theme`). Component specs: [`design-system/components.md`](design-system/components.md).
 
----
+**Governing rules:**
+1. **No raw values.** If a color, size, radius, shadow, or easing isn't a token, it doesn't ship.
+2. **Accents are fills, not text.** Every colored surface carries ink text and an ink outline; accent colors never appear as small text on the canvas. This is what keeps a 10-color palette AA-safe.
 
-## 1. Color
-
-### Canvas & text (measured WCAG ratios)
+## 1. Color (measured WCAG ratios)
 
 | Token | Value | Role | Contrast |
 |---|---|---|---|
-| `ink` | `#0D0B09` | page canvas (warm near-black, replaces 9 ad-hoc blacks/browns) | — |
-| `ink-raised` / `ink-card` | `#14110E` / `#171310` | panels, wells | — |
-| `paper` / `paper-dim` | `#F3EFE7` / `#E9E3D7` | the single inverted mode | — |
-| `cream` | `#F3EFE7` | primary text on ink | **17.1:1** |
-| `gray` | `#C9C0B4` | secondary on ink | **10.9:1** (10.3:1 on `ink-card`) |
-| `gray-dim` | `#9A8F81` | tertiary/metadata on ink | **6.2:1** |
-| `ink-text` | `#141110` | primary on paper | **16.4:1** |
-| `ink-soft` | `#5C554B` | secondary on paper | **6.4:1** |
-| `ember` | `#FF5C1C` | the hot accent, on ink | **6.4:1** — AA at every size |
-| `ember-deep` | `#B33A0A` | the accent, on paper | **5.2:1** |
+| `paper` | `#FAF3E9` | page canvas (warm cream) | — |
+| `panel` / `panel-dim` | `#FFFDF7` / `#F3EAD9` | cards, wells | — |
+| `ink` | `#17140F` | text **and** all outlines | **16.7:1** on paper |
+| `ink-soft` | `#5D564A` | secondary text | **6.6:1** |
+| `ember` | `#FF5C1C` | primary CTA fill | ink text on it: **6.0:1** |
+| `ember-deep` | `#B33A0A` | accent text on cream, focus ring | **5.4:1** |
+| `violet · pink · yellow · mint · teal · purple` | see tokens | sticker fills (nav pill, badges, icon squares, contact panel) | ink on each ≥ **6.7:1** |
 
-Rules: ember appears **once per viewport region** (a marker, a stat, a hover — never a background wash). The old body-level ember radial gradient and `gradient-text` fill are retired. Hairlines use `line` (`cream @ 14%`) / `line-ink` — ledger rules are structure, not decoration, so they sit on real grid edges.
-
-### Per-teardown accents
-
-Each deck's cover already carries a color identity; the system formalizes it (Linear-style: systematic, not decorative). `--color-deck-*` tokens color that deck's index marker, key stat, and hover accent **only on its own surfaces**. All ≥ 4.5:1 on ink (measured: vapes 7.2, sachet 6.4, chip 8.9, bottle-product 6.3, bottle-scent 14.6, plastic 9.8, mokobara 10.6, birkenstock 9.1, scoop 11.7, makadi 10.1).
+**Per-teardown accents** (`--color-deck-*`): each deck keeps its cover-derived identity as a *fill* — stat chips, meta pills, beat numbers, index-row hover fills. All carry ink text at ≥ **8.3:1**. The mint `badge` is reserved for the availability status; ember is reserved for the primary action.
 
 ## 2. Typography
 
-| Family | File (self-hosted, `public/fonts/`) | Role |
-|---|---|---|
-| **Archivo Variable** (wght axis) | 36 KB woff2, preloaded | display + UI. A grotesque with real character at heavy weights; used 500–800. |
-| **Newsreader Variable** (opsz + wght, roman + italic) | 132/144 KB woff2, lazy | reading face: theses, narrative, about. Earns the editorial register; italic for pull-lines. |
-| **Space Mono** 400/700 | 20 KB each | index numbers, metadata labels, stats captions — the ledger voice. |
+Same three families as before (self-hosted, `public/fonts/`, ~200 KB total, three preloaded):
 
-Scale (tokens `--text-*`): 11 label / 14 / 16 / 19 body-serif / 22 lede / 28 / 36 / 48 / stat `clamp(44→72)` / title `clamp(40→76)` / display `clamp(52→136)`, with leading and tracking baked into the token (display 0.92 / −0.03em; serif body 1.65). **Measure:** reading text ≤ 65ch (`max-w-[62ch]` in practice).
+- **Archivo Variable** — display + UI. Display and section headings are now **font-black UPPERCASE** (the chunky poster voice); weights 500–900 in UI.
+- **Newsreader Variable** — reading face for theses, narrative, about; italic for subtitles and pull-quotes. Keeps the research register so the playfulness never reads as unserious.
+- **Space Mono** — index numbers, metadata labels (11px, +0.14em, uppercase), stat chips.
 
-**Capitalization — one rule:** Sentence case everywhere (headings, buttons, links). UPPERCASE exists only in `text-label` mono metadata (11px, +0.14em tracking). The old lowercase-heading affectation and Title Case headlines are both retired.
+Scale tokens unchanged in structure; display/title clamp lower (`display` 44→88px, `title` 36→68px) because uppercase black weight carries more optical size. Reading measure stays ≤ 65ch.
 
-## 3. Spacing & grid
+**Capitalization rule:** UPPERCASE for display/section headings (H1/H2) and mono labels; sentence case for everything else (H3s, buttons, links, body).
 
-Base unit **4 px** (Tailwind scale). Named steps, used consistently: element 8–12, group 16–24, block 40–64, section 96–160 (`py-24`→`py-40` responsive). Sections share one container: `max-w-6xl` + `px-6/10`, structured by a 12-col grid (`grid-cols-12`) with ledger hairlines on column edges where composition calls for them. Asymmetry is the default: hero 7/5, case pages 8/4, range rows 3/6/3.
+## 3. Shape, borders, elevation
 
-## 4. Radius, borders, elevation
+- **Borders:** 2px ink outlines on every component surface; 2px section rules; hairline (`line`, ink @ 15%) only inside lists.
+- **Radius:** `ctl` 12px (buttons, chips), `media` 14px (images), `card` 20px (panels), `badge` 999px (pills).
+- **Elevation = hard offset shadows**, never blur: `sticker-sm` 2px, `sticker` 4px, `sticker-lg` 7px — all pure ink. Interactive surfaces lift on hover (translate −2,−2 + `sticker-lg`) and press on active (translate +2,+2 + `sticker-sm`).
 
-- Radius: `ctl` 2 px (buttons, inputs, tags) and `media` 4 px (images, embeds). **Nothing else is rounded.** `rounded-2xl/3xl/full` are gone, including pill buttons.
-- Borders: 1 px hairlines in `line`/`line-ink` only. No decorative borders.
-- Elevation: none. Dark editorial surfaces separate by value (`ink` vs `ink-card`), not shadows. No glows.
+## 4. Motion
 
-## 5. Motion
+Contract unchanged: motion must explain or guide. Tokens: `quick` 140ms / `base` 280ms / `reveal` 640ms; `out-expo` for reveals, `swift` for state.
 
-**Contract: motion must explain or guide — orientation between pages, reading order within a section, state feedback on an control. Anything else is cut.**
+- Hero entrance: pure CSS (`.enter`), staggered, zero JS dependency (protects LCP).
+- Scroll reveals: IO-driven, group-level, once (`.reveal`).
+- Route enter + prev/next chain orients movement through the library.
+- Sticker stack `drift`: 7s idle float, ±8px — the one decorative exception, earned by being the hero's signature.
+- **Reduced motion** collapses all of the above globally, including `drift`.
+- About word-reveal floor: **0.6 opacity = 4.66:1 (AA) at rest**.
 
-- Tokens: `quick` 140ms (state feedback), `base` 280ms (menus/filters), `reveal` 640ms (scroll/page reveals); easings `out-expo` for reveals, `swift` for state.
-- Scroll reveals: **group-level, once, small distance** (12 px rise + fade, IntersectionObserver adding `.is-in`); they sequence reading order, never per-character. The About reveal keeps its scroll-linked idea at *word* granularity with a floor of 35 % opacity (readable at rest).
-- Page transitions: case-study pages enter with a single `reveal` rise; prev/next navigation keeps the reader oriented in the library sequence.
-- **Reduced motion:** `@media (prefers-reduced-motion: reduce)` collapses all reveals/transitions to opacity-only ≤ 1ms and disables scroll-linked effects. This is global CSS, not per-component opt-in.
+## 5. Page temperature
 
-## 6. Components (full specs in `design-system/components.md`)
+- **Home:** full sticker energy — tilted cover stack, icon badges, edge doodles, colored cards, violet contact panel.
+- **Case-study pages:** same language, lower temperature — cream canvas, one meta pill + one stat chip + numbered beats in the deck's accent, no doodles. The teardown reads like research; the system just frames it.
 
-Button (primary/quiet), inline link, nav (fixed, scroll-aware, mobile disclosure), teardown index row, featured casebook entry, key-stat block, case-study page template, tag/filter, subscribe embed, footer. Every interactive component defines default / hover / focus-visible / active; focus is a 2 px ember outline with 2 px offset, everywhere, no exceptions.
+## 6. Iconography
 
-## 7. Iconography
-
-Lucide (already in the stack), 1.5 px stroke, 16/20 px sizes, used sparingly (arrows, external-link, mail). No emoji anywhere.
+Lucide, 2px stroke, 16–24px, always inside `icon-badge` squares or inline with text. No emoji.

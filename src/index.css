@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "../design-system/tokens.css";
 
-/* ---- Self-hosted fonts (files in public/fonts/, archivo preloaded) ---- */
+/* ---- Self-hosted fonts (files in public/fonts/, three preloaded) ---- */
 @font-face {
   font-family: "Archivo Variable";
   font-style: normal;
@@ -39,214 +39,251 @@
 }
 
 @layer base {
-html {
-  scroll-behavior: smooth;
-}
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip; /* decorative stickers may bleed past the edge */
+  }
 
-body {
-  background: var(--color-ink);
-  color: var(--color-cream);
-  font-family: var(--font-display);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
 
-::selection {
-  background: var(--color-ember);
-  color: var(--color-cream);
-}
+  ::selection {
+    background: var(--color-ember);
+    color: var(--color-paper);
+  }
 
-/* ---- Focus contract: one ring, everywhere ---- */
-:focus-visible {
-  outline: 2px solid var(--color-ember);
-  outline-offset: 2px;
-  border-radius: var(--radius-ctl);
-}
-.on-paper :focus-visible {
-  outline-color: var(--color-ember-deep);
-}
+  /* ---- Focus contract: one ring, everywhere ---- */
+  :focus-visible {
+    outline: 3px solid var(--color-ember-deep);
+    outline-offset: 2px;
+    border-radius: var(--radius-ctl);
+  }
 }
 
 @layer components {
-/* ---- Skip link ---- */
-.skip-link {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 100;
-  transform: translateY(-300%);
-  background: var(--color-ember);
-  color: var(--color-cream);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  padding: 0.625rem 1rem;
-  border-radius: var(--radius-ctl);
-  transition: transform var(--duration-quick) var(--ease-swift);
-}
-.skip-link:focus-visible {
-  transform: translateY(0);
-}
-
-/* ---- Buttons ---- */
-.btn-primary,
-.btn-quiet {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: 1;
-  padding: 0.875rem 1.25rem;
-  border-radius: var(--radius-ctl);
-  transition:
-    background-color var(--duration-quick) var(--ease-swift),
-    border-color var(--duration-quick) var(--ease-swift),
-    color var(--duration-quick) var(--ease-swift);
-}
-.btn-primary:active,
-.btn-quiet:active {
-  transform: translateY(1px);
-}
-.btn-primary svg,
-.btn-quiet svg {
-  transition: transform var(--duration-quick) var(--ease-swift);
-}
-.btn-primary:hover svg,
-.btn-quiet:hover svg {
-  transform: translate(2px, -2px);
-}
-.btn-primary {
-  background: var(--color-cream);
-  color: var(--color-ink-text);
-}
-.btn-primary:hover {
-  background: var(--color-ember);
-  color: var(--color-cream);
-}
-.btn-quiet {
-  border: 1px solid var(--color-line-strong);
-  color: var(--color-cream);
-}
-.btn-quiet:hover {
-  border-color: var(--color-cream);
-  background: var(--color-ink-card);
-}
-.on-paper .btn-primary {
-  background: var(--color-ink-text);
-  color: var(--color-paper);
-}
-.on-paper .btn-primary:hover {
-  background: var(--color-ember-deep);
-  color: var(--color-paper);
-}
-.on-paper .btn-quiet {
-  border-color: var(--color-line-ink);
-  color: var(--color-ink-text);
-}
-.on-paper .btn-quiet:hover {
-  border-color: var(--color-ink-text);
-  background: var(--color-paper-dim);
-}
-
-/* ---- Inline links: underline is the interaction, not zoom ---- */
-.link {
-  text-underline-offset: 3px;
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--color-line-strong);
-  transition: text-decoration-color var(--duration-quick) var(--ease-swift);
-}
-.link:hover {
-  text-decoration-color: var(--color-ember);
-}
-.on-paper .link {
-  text-decoration-color: var(--color-line-ink);
-}
-.on-paper .link:hover {
-  text-decoration-color: var(--color-ember-deep);
-}
-
-/* ---- Underline-draw for nav links ---- */
-.navlink {
-  position: relative;
-}
-.navlink::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 100%;
-  bottom: -4px;
-  height: 1px;
-  background: var(--color-cream);
-  transition: right var(--duration-base) var(--ease-out-expo);
-}
-.navlink:hover::after,
-.navlink[aria-current="true"]::after {
-  right: 0;
-}
-
-/* ---- Scroll reveals: group-level, once, explain reading order.
-        SSG markup is fully visible; the hidden initial state only
-        exists when JS is running (html.js set inline in index.html). ---- */
-.reveal {
-  transition:
-    opacity var(--duration-reveal) var(--ease-out-expo),
-    transform var(--duration-reveal) var(--ease-out-expo);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-html.js .reveal:not(.is-in) {
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-/* ---- Hero enter: pure CSS so the first screen never waits for JS ---- */
-html.js .enter {
-  animation: page-enter var(--duration-reveal) var(--ease-out-expo) both;
-  animation-delay: var(--enter-delay, 0ms);
-}
-
-/* ---- Route enter: one rise, orients page-to-page navigation ---- */
-html.js .page-enter {
-  animation: page-enter var(--duration-reveal) var(--ease-out-expo) both;
-}
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  /* ---- Skip link ---- */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    transform: translateY(-300%);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-ctl);
+    transition: transform var(--duration-quick) var(--ease-swift);
   }
-  to {
-    opacity: 1;
-    transform: none;
+  .skip-link:focus-visible {
+    transform: translateY(0);
   }
-}
 
-/* ---- About: scroll-linked word reveal (JS sets --p per word,
-        floor keeps it readable at rest; see About.tsx) ---- */
-.word-reveal span {
-  opacity: calc(0.5 + 0.5 * var(--p, 1)); /* 0.5 floor = 4.79:1 on ink (AA) */
-}
+  /* ---- Buttons: colored fill, ink outline, hard shadow.
+          Hover lifts toward the light; press pushes into the page. ---- */
+  .btn-primary,
+  .btn-quiet {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 650;
+    font-size: var(--text-base);
+    line-height: 1;
+    color: var(--color-ink);
+    padding: 0.875rem 1.375rem;
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-ctl);
+    box-shadow: var(--shadow-sticker);
+    transition:
+      transform var(--duration-quick) var(--ease-swift),
+      box-shadow var(--duration-quick) var(--ease-swift),
+      background-color var(--duration-quick) var(--ease-swift);
+  }
+  .btn-primary {
+    background: var(--color-ember);
+  }
+  .btn-quiet {
+    background: var(--color-panel);
+  }
+  .btn-primary:hover,
+  .btn-quiet:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-sticker-lg);
+  }
+  .btn-primary:active,
+  .btn-quiet:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-sticker-sm);
+  }
 
-/* ---- Reduced motion: the global contract ---- */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  /* ---- Status badge (the "available" pill) ---- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-mint);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-badge);
+    padding: 0.5rem 0.875rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    box-shadow: var(--shadow-sticker-sm);
+  }
+
+  /* ---- Sticker card: the workhorse surface ---- */
+  .sticker {
+    background: var(--color-panel);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sticker);
+  }
+  a.sticker {
+    transition:
+      transform var(--duration-quick) var(--ease-swift),
+      box-shadow var(--duration-quick) var(--ease-swift);
+  }
+  a.sticker:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-sticker-lg);
+  }
+  a.sticker:active {
+    transform: translate(1px, 1px);
+    box-shadow: var(--shadow-sticker-sm);
+  }
+
+  /* ---- Icon badge (colored square behind a lucide icon) ---- */
+  .icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-ctl);
+    box-shadow: var(--shadow-sticker-sm);
+    color: var(--color-ink);
+  }
+
+  /* ---- Inline links ---- */
+  .link {
+    text-underline-offset: 3px;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--color-line);
+    transition: text-decoration-color var(--duration-quick) var(--ease-swift);
+  }
+  .link:hover {
+    text-decoration-color: var(--color-ember-deep);
+  }
+
+  /* ---- Underline-draw for nav links ---- */
+  .navlink {
+    position: relative;
+  }
+  .navlink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: -4px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-ink);
+    transition: right var(--duration-base) var(--ease-out-expo);
+  }
+  .navlink:hover::after,
+  .navlink[aria-current="true"]::after {
+    right: 0;
+  }
+
+  /* ---- Scroll reveals: group-level, once, explain reading order.
+          SSG markup is fully visible; the hidden initial state only
+          exists when JS is running (html.js set inline in index.html). ---- */
+  .reveal {
+    transition:
+      opacity var(--duration-reveal) var(--ease-out-expo),
+      transform var(--duration-reveal) var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
   }
   html.js .reveal:not(.is-in) {
-    opacity: 1;
-    transform: none;
+    opacity: 0;
+    transform: translateY(12px);
   }
-  html.js .page-enter,
+
+  /* ---- Hero enter: pure CSS so the first screen never waits for JS ---- */
   html.js .enter {
-    animation: none;
+    animation: page-enter var(--duration-reveal) var(--ease-out-expo) both;
+    animation-delay: var(--enter-delay, 0ms);
   }
+
+  /* ---- Route enter: one rise, orients page-to-page navigation ---- */
+  html.js .page-enter {
+    animation: page-enter var(--duration-reveal) var(--ease-out-expo) both;
+  }
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ---- Hero sticker stack: slow idle drift, disabled under
+          reduced motion. Rotation lives on the parent; this only
+          translates, so the two compose. ---- */
+  html.js .drift {
+    animation: drift 7s ease-in-out infinite;
+    animation-delay: var(--drift-delay, 0s);
+  }
+  @keyframes drift {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -8px;
+    }
+  }
+
+  /* ---- About: scroll-linked word reveal (JS sets --p per word) ---- */
   .word-reveal span {
-    opacity: 1 !important;
+    opacity: calc(0.6 + 0.4 * var(--p, 1)); /* 0.6 floor = 4.66:1 on cream (AA) */
   }
-  *,
-  *::before,
-  *::after {
-    transition-duration: 1ms !important;
-    animation-duration: 1ms !important;
+
+  /* ---- Reduced motion: the global contract ---- */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    html.js .reveal:not(.is-in) {
+      opacity: 1;
+      transform: none;
+    }
+    html.js .page-enter,
+    html.js .enter,
+    html.js .drift {
+      animation: none;
+    }
+    .word-reveal span {
+      opacity: 1 !important;
+    }
+    *,
+    *::before,
+    *::after {
+      transition-duration: 1ms !important;
+      animation-duration: 1ms !important;
+    }
   }
-}
 }

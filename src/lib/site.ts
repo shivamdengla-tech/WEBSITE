@@ -14,6 +14,8 @@ export interface PageMeta {
   /** Path with leading slash, e.g. "/decks/mokobara/". */
   path: string;
   ogImage?: string;
+  /** Image to <link rel="preload"> (the LCP element, if it's an image). */
+  preloadImage?: string;
   /** Extra JSON-LD blocks. */
   jsonLd?: object[];
 }
@@ -40,6 +42,9 @@ export function headHtml(meta: PageMeta): string {
     )
     .join("\n    ");
   return [
+    ...(meta.preloadImage
+      ? [`<link rel="preload" as="image" href="${meta.preloadImage}" />`]
+      : []),
     `<title>${esc(meta.title)}</title>`,
     `<meta name="description" content="${esc(meta.description)}" />`,
     `<link rel="canonical" href="${url}" />`,
