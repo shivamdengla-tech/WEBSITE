@@ -1,20 +1,34 @@
-# Shivam Dengla, personal portfolio
+# shivamdengla.in — personal site
 
-React + TypeScript + Vite + Tailwind CSS v4 + Framer Motion + Lucide, Kanit font, dark theme (#0C0C0C).
+Editorial, statically generated portfolio built around the consumer-industry teardown library.
+
+**Stack:** React 18 + TypeScript + Vite 6 + Tailwind CSS v4 + React Router 7, prerendered to static HTML at build time (no server needed). Fonts (Archivo, Newsreader, Space Mono) are self-hosted from `public/fonts/`.
 
 ## Commands
 
 ```bash
 npm install
-npm run dev      # local dev server
-npm run build    # renders deck covers from the PDFs, then builds to dist/
-npm run preview  # serve the production build
+npm run dev      # local dev server (client-rendered)
+npm run build    # covers → webp derivatives → typecheck → client build → SSR build → prerender all routes
+npm run preview  # serve the production build from dist/
 ```
 
-## Deck covers
+## Structure
 
-`scripts/generate-covers.mjs` renders page 1 of every PDF in `public/decks/` to a PNG in `public/decks/covers/`. It runs automatically before `npm run build` and skips covers that are newer than their PDF.
+- `design-system/tokens.css` — every color/type/spacing/motion token (single source of truth; see `DESIGN-SYSTEM.md`)
+- `src/data/decks.ts` — the teardown library: slugs, theses, stats, beats (all sourced from the PDFs — don't invent content)
+- `src/pages/` — Home, per-deck case study (`/decks/<slug>/`), 404
+- `scripts/generate-covers.mjs` — renders page 1 of each PDF in `public/decks/` to a cover PNG
+- `scripts/optimize-covers.mjs` — 640/1280w WebP derivatives of the covers
+- `scripts/prerender.mjs` — SSG: renders every route to `dist/`, emits `sitemap.xml` + `robots.txt`
 
-## Portrait
+## Adding a new deck
 
-`public/portrait.png` is generated from `public/image.png` by `scripts/make-portrait.mjs`, which makes the background transparent so the photo blends into the dark theme. Re-run it with `node scripts/make-portrait.mjs` if you replace the source photo.
+1. Drop the PDF into `public/decks/`.
+2. `npm run covers` to generate + optimize its cover.
+3. Add an entry to `src/data/decks.ts` (slug, title/subtitle from the deck's own cover, category, size label, accent token in `design-system/tokens.css`, key stat/thesis/beats/takeaway from the deck itself).
+4. Build — the case-study page, sitemap entry, and index row all derive from that one entry.
+
+## Docs
+
+`AUDIT.md` (forensic audit of the previous build) → `STRATEGY.md` (IA & journey) → `DESIGN-SYSTEM.md` (+`design-system/components.md`) → `RATIONALE.md` (before/after, decisions, deferred backlog).
